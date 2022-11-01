@@ -31,7 +31,7 @@ const Layout = ({children}: Props) => {
         </header>
         <main className="container m-auto px-4 mt-4">{children}</main>
         <footer className="flex h-10 items-center justify-center shadow-inner ">
-          <p>Copyright © 2022 Amazona</p>
+          <p>Copyright © 2022 MinhShop</p>
         </footer>
       </div>
     </>
