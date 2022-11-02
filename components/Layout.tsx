@@ -2,13 +2,13 @@ import {ReactNode} from "react";
 import Head from "next/head";
 import Link from "next/link";
 
-type Props = {children: ReactNode};
+type Props = {children: ReactNode; title?: String};
 
-const Layout = ({children}: Props) => {
+const Layout = ({children, title}: Props) => {
   return (
     <>
       <Head>
-        <title>Minh Shop</title>
+        <title>{title ? `MinhShop- ${title}` : "MinhShop"}</title>
         <meta name="description" content="E-commerce" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
