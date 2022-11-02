@@ -1,6 +1,6 @@
 import {createContext, Dispatch, ReactNode, useReducer} from "react";
 
-interface IProduct {
+export interface IProduct {
   name: string;
   slug: string;
   category: string;
@@ -18,7 +18,7 @@ interface IState {
   cart: {cartItems: IProduct[]};
 }
 interface IAction {
-  type: "CART_ADD_ITEM";
+  type: "CART_ADD_ITEM" | "CART_REMOVE_ITEM";
   payload: IProduct;
 }
 interface IStoreValue {
@@ -45,6 +45,12 @@ function reducer(state: IState, action: IAction) {
             item.name === existItem.name ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
+      return {...state, cart: {cartItems}};
+    }
+    case "CART_REMOVE_ITEM": {
+      const cartItems = state.cart.cartItems.filter(
+        (item) => item.slug !== action.payload.slug
+      );
       return {...state, cart: {cartItems}};
     }
     default:
