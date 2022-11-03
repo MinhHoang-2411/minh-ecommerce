@@ -21,9 +21,12 @@ interface IAction {
   type: "CART_ADD_ITEM" | "CART_REMOVE_ITEM";
   payload: IProduct;
 }
+interface IAction2 {
+  type: "CART_RESET";
+}
 interface IStoreValue {
   state: IState;
-  dispatch: Dispatch<IAction>;
+  dispatch: Dispatch<IAction | IAction2>;
 }
 interface IStoreProvider {
   children: ReactNode;
@@ -35,7 +38,7 @@ const initialState: IState = {
     : {cartItems: []},
 };
 
-function reducer(state: IState, action: IAction) {
+function reducer(state: IState, action: IAction | IAction2) {
   switch (action.type) {
     case "CART_ADD_ITEM": {
       const newItem = action.payload;
@@ -57,6 +60,15 @@ function reducer(state: IState, action: IAction) {
       Cookies.set("cart", JSON.stringify({cartItems}));
       return {...state, cart: {cartItems}};
     }
+    case "CART_RESET":
+      return {
+        ...state,
+        cart: {
+          cartItems: [],
+          shippingAddress: {location: {}},
+          paymentMethod: "",
+        },
+      };
     default:
       return state;
   }
