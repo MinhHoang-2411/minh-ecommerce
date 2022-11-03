@@ -1,5 +1,5 @@
 import {createContext, Dispatch, ReactNode, useReducer} from "react";
-
+import Cookies from "js-cookie";
 export interface IProduct {
   name: string;
   slug: string;
@@ -30,7 +30,9 @@ interface IStoreProvider {
 }
 
 const initialState: IState = {
-  cart: {cartItems: []},
+  cart: Cookies.get("cart")
+    ? JSON.parse(Cookies.get("cart") as string)
+    : {cartItems: []},
 };
 
 function reducer(state: IState, action: IAction) {
@@ -45,12 +47,14 @@ function reducer(state: IState, action: IAction) {
             item.name === existItem.name ? newItem : item
           )
         : [...state.cart.cartItems, newItem];
+      Cookies.set("cart", JSON.stringify({cartItems}));
       return {...state, cart: {cartItems}};
     }
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item.slug !== action.payload.slug
       );
+      Cookies.set("cart", JSON.stringify({cartItems}));
       return {...state, cart: {cartItems}};
     }
     default:
@@ -63,5 +67,6 @@ export const Store = createContext({} as IStoreValue);
 export function StoreProvider({children}: IStoreProvider) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const value = {state, dispatch};
+
   return <Store.Provider value={value}>{children}</Store.Provider>;
 }
