@@ -1,10 +1,24 @@
 import Link from "next/link";
+import {signIn, useSession} from "next-auth/react";
+import {toast} from "react-toastify";
 import {Formik, Form} from "formik";
 import * as Yup from "yup";
 import Layout from "../components/Layout";
 import {useEffect, useRef} from "react";
+import {useRouter} from "next/router";
+import {getError} from "../utils/error";
 
 export default function LoginScreen() {
+  const {data: session} = useSession();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session?.user) {
+      router.push("/");
+    }
+  }, [router, session]);
+
   const initialValues = {
     email: "",
     password: "",
@@ -24,8 +38,19 @@ export default function LoginScreen() {
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
-        onSubmit={(values, submitProps) => {
-          console.log(values.email, values.password);
+        onSubmit={async (values, submitProps) => {
+          try {
+            const result = await signIn("credentials", {
+              redirect: false,
+              email: values.email,
+              password: values.password,
+            });
+            if (result?.error) {
+              toast.error(result.error);
+            }
+          } catch (err) {
+            toast.error(getError(err));
+          }
           submitProps.resetForm();
         }}
       >
