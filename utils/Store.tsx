@@ -14,8 +14,16 @@ export interface IProduct {
   quantity: number;
 }
 
+export interface IShippingAddress {
+  fullName: string;
+  address: string;
+  city: string;
+  postalCode: string;
+  country: string;
+}
+
 interface IState {
-  cart: {cartItems: IProduct[]};
+  cart: {cartItems: IProduct[]; shippingAddress: IShippingAddress};
 }
 interface IAction {
   type: "CART_ADD_ITEM" | "CART_REMOVE_ITEM";
@@ -24,9 +32,15 @@ interface IAction {
 interface IAction2 {
   type: "CART_RESET";
 }
+
+interface IAction3 {
+  type: "SAVE_SHIPPING_ADDRESS";
+  payload: IShippingAddress;
+}
+
 interface IStoreValue {
   state: IState;
-  dispatch: Dispatch<IAction | IAction2>;
+  dispatch: Dispatch<IAction | IAction2 | IAction3>;
 }
 interface IStoreProvider {
   children: ReactNode;
@@ -35,10 +49,13 @@ interface IStoreProvider {
 const initialState: IState = {
   cart: Cookies.get("cart")
     ? JSON.parse(Cookies.get("cart") as string)
-    : {cartItems: []},
+    : {
+        cartItems: [],
+        shippingAddress: {},
+      },
 };
 
-function reducer(state: IState, action: IAction | IAction2) {
+function reducer(state: IState, action: IAction | IAction2 | IAction3) {
   switch (action.type) {
     case "CART_ADD_ITEM": {
       const newItem = action.payload;
@@ -51,22 +68,38 @@ function reducer(state: IState, action: IAction | IAction2) {
           )
         : [...state.cart.cartItems, newItem];
       Cookies.set("cart", JSON.stringify({cartItems}));
-      return {...state, cart: {cartItems}};
+      return {
+        ...state,
+        cart: {...state.cart, cartItems},
+      };
     }
     case "CART_REMOVE_ITEM": {
       const cartItems = state.cart.cartItems.filter(
         (item) => item.slug !== action.payload.slug
       );
       Cookies.set("cart", JSON.stringify({cartItems}));
-      return {...state, cart: {cartItems}};
+      return {
+        ...state,
+        cart: {...state.cart, cartItems},
+      };
     }
     case "CART_RESET":
       return {
         ...state,
         cart: {
           cartItems: [],
-          shippingAddress: {location: {}},
-          paymentMethod: "",
+          shippingAddress: {},
+        },
+      };
+    case "SAVE_SHIPPING_ADDRESS":
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          shippingAddress: {
+            ...state.cart.shippingAddress,
+            ...action.payload,
+          },
         },
       };
     default:
