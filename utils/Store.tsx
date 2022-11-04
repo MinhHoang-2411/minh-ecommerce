@@ -23,7 +23,11 @@ export interface IShippingAddress {
 }
 
 interface IState {
-  cart: {cartItems: IProduct[]; shippingAddress: IShippingAddress};
+  cart: {
+    cartItems: IProduct[];
+    shippingAddress: IShippingAddress;
+    paymentMethod: string;
+  };
 }
 interface IAction {
   type: "CART_ADD_ITEM" | "CART_REMOVE_ITEM";
@@ -38,9 +42,14 @@ interface IAction3 {
   payload: IShippingAddress;
 }
 
+interface IAction4 {
+  type: "SAVE_PAYMENT_METHOD";
+  payload: string;
+}
+
 interface IStoreValue {
   state: IState;
-  dispatch: Dispatch<IAction | IAction2 | IAction3>;
+  dispatch: Dispatch<IAction | IAction2 | IAction3 | IAction4>;
 }
 interface IStoreProvider {
   children: ReactNode;
@@ -52,10 +61,14 @@ const initialState: IState = {
     : {
         cartItems: [],
         shippingAddress: {},
+        paymentMethod: "",
       },
 };
 
-function reducer(state: IState, action: IAction | IAction2 | IAction3) {
+function reducer(
+  state: IState,
+  action: IAction | IAction2 | IAction3 | IAction4
+) {
   switch (action.type) {
     case "CART_ADD_ITEM": {
       const newItem = action.payload;
@@ -100,6 +113,14 @@ function reducer(state: IState, action: IAction | IAction2 | IAction3) {
             ...state.cart.shippingAddress,
             ...action.payload,
           },
+        },
+      };
+    case "SAVE_PAYMENT_METHOD":
+      return {
+        ...state,
+        cart: {
+          ...state.cart,
+          paymentMethod: action.payload,
         },
       };
     default:
