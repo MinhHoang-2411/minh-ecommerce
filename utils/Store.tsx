@@ -35,7 +35,7 @@ interface IAction {
   payload: IProduct;
 }
 interface IAction2 {
-  type: "CART_RESET";
+  type: "CART_RESET" | "CART_CLEAR_ITEMS";
 }
 
 interface IAction3 {
@@ -105,6 +105,8 @@ function reducer(
           shippingAddress: {},
         },
       };
+    case "CART_CLEAR_ITEMS":
+      return {...state, cart: {...state.cart, cartItems: []}};
     case "SAVE_SHIPPING_ADDRESS":
       return {
         ...state,
