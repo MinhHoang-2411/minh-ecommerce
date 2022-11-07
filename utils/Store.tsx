@@ -1,6 +1,7 @@
 import {createContext, Dispatch, ReactNode, useReducer} from "react";
 import Cookies from "js-cookie";
 export interface IProduct {
+  _id: number;
   name: string;
   slug: string;
   category: string;

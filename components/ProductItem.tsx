@@ -1,22 +1,25 @@
 import Link from "next/link";
 import React from "react";
 
+export interface IProDuct {
+  _id: number;
+  name: string;
+  slug: string;
+  category: string;
+  image: string;
+  price: number;
+  brand: string;
+  rating: number;
+  numReviews: number;
+  countInStock: number;
+  description: string;
+}
 interface IProductItem {
-  product: {
-    name: string;
-    slug: string;
-    category: string;
-    image: string;
-    price: number;
-    brand: string;
-    rating: number;
-    numReviews: number;
-    countInStock: number;
-    description: string;
-  };
+  product: IProDuct;
+  addToCartHandler: (product: IProDuct) => void;
 }
 
-export default function ProductItem({product}: IProductItem) {
+export default function ProductItem({product, addToCartHandler}: IProductItem) {
   return (
     <div>
       <Link href={`/product/${product.slug}`}>
@@ -32,7 +35,11 @@ export default function ProductItem({product}: IProductItem) {
         </Link>
         <p className="mb-2">{product.brand}</p>
         <p>${product.price}</p>
-        <button className="primary-button" type="button">
+        <button
+          className="primary-button"
+          type="button"
+          onClick={() => addToCartHandler(product)}
+        >
           Add to cart
         </button>
       </div>
