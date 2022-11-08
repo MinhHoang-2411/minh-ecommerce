@@ -21,7 +21,8 @@
     "**/*.ts",
     "**/*.tsx",
     "utils/data.js",
-    "utils/data.js"
+    "utils/data.js",
+    "pages/orders/[id].jsx"
   ],
   "exclude": ["node_modules"]
 }
