@@ -61,7 +61,7 @@ const ShippingScreen = (props: Props) => {
       >
         {(formik) => {
           useEffect(() => {
-            if (cart.shippingAddress.fullName) {
+            if (cart?.shippingAddress?.fullName) {
               formik.setFieldValue("fullName", cart.shippingAddress.fullName);
               formik.setFieldValue("address", cart.shippingAddress.address);
               formik.setFieldValue("city", cart.shippingAddress.city);
